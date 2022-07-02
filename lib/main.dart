@@ -8,7 +8,7 @@ class Bytebank extends StatelessWidget {
   const Bytebank({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: TransferForm(),
       ),
@@ -17,7 +17,10 @@ class Bytebank extends StatelessWidget {
 }
 
 class TransferForm extends StatelessWidget {
-  const TransferForm({super.key});
+  TransferForm({super.key});
+
+  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _valueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +30,15 @@ class TransferForm extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
             child: TextField(
+              controller: _accountController,
               keyboardType: TextInputType.number,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24.0,
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 icon: Icon(
                   Icons.account_circle,
                   size: 32.0,
@@ -45,14 +49,15 @@ class TransferForm extends StatelessWidget {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
             child: TextField(
+              controller: _valueController,
               keyboardType: TextInputType.number,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24.0,
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 icon: Icon(
                   Icons.monetization_on,
                   size: 32.0,
@@ -64,7 +69,36 @@ class TransferForm extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              final int? account = int.tryParse(_accountController.text);
+              final double? value = double.tryParse(_valueController.text);
+              if ((account != null) && (value != null)) {
+                final createdTransfer =
+                    Transfer(value: value, account: account);
+                debugPrint(createdTransfer.toString());
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      createdTransfer.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    duration: const Duration(milliseconds: 3000),
+                    width: 300,
+                    padding: const EdgeInsets.all(16.0),
+                    backgroundColor: Colors.orange,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                );
+              }
+            },
             child: const Text('Create'),
           )
         ],
@@ -121,4 +155,9 @@ class Transfer {
   final int account;
 
   Transfer({required this.value, required this.account});
+
+  @override
+  String toString() {
+    return 'Created transfer to Account: $account with the Value: $value';
+  }
 }
