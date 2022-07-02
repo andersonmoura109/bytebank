@@ -30,78 +30,86 @@ class TransferForm extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
-            child: TextField(
+          EditField(
               controller: _accountController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(
-                fontSize: 24.0,
-              ),
-              decoration: const InputDecoration(
-                icon: Icon(
-                  Icons.account_circle,
-                  size: 32.0,
-                ),
-                border: OutlineInputBorder(),
-                labelText: 'Account',
-                hintText: '1000',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
-            child: TextField(
+              label: 'Account',
+              hint: '1000',
+              icon: Icons.account_circle),
+          EditField(
               controller: _valueController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(
-                fontSize: 24.0,
-              ),
-              decoration: const InputDecoration(
-                icon: Icon(
-                  Icons.monetization_on,
-                  size: 32.0,
-                ),
-                border: OutlineInputBorder(),
-                labelText: 'Value',
-                hintText: '100.00',
-              ),
-            ),
-          ),
+              label: 'Value',
+              hint: '100.0',
+              icon: Icons.monetization_on),
           ElevatedButton(
-            onPressed: () {
-              final int? account = int.tryParse(_accountController.text);
-              final double? value = double.tryParse(_valueController.text);
-              if ((account != null) && (value != null)) {
-                final createdTransfer =
-                    Transfer(value: value, account: account);
-                debugPrint(createdTransfer.toString());
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      createdTransfer.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    duration: const Duration(milliseconds: 3000),
-                    width: 300,
-                    padding: const EdgeInsets.all(16.0),
-                    backgroundColor: Colors.orange,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+            onPressed: () => {
+              _createTransfer,
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(
+                    'Test',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              }
+                  duration: const Duration(milliseconds: 3000),
+                  width: 300,
+                  padding: const EdgeInsets.all(16.0),
+                  backgroundColor: Colors.orange,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
             },
             child: const Text('Create'),
           )
         ],
+      ),
+    );
+  }
+
+  void _createTransfer() {
+    final int? account = int.tryParse(_accountController.text);
+    final double? value = double.tryParse(_valueController.text);
+    if ((account != null) && (value != null)) {
+      Transfer(value: value, account: account);
+    }
+  }
+}
+
+class EditField extends StatelessWidget {
+  final TextEditingController controller;
+  final String? label;
+  final String? hint;
+  final IconData? icon;
+
+  const EditField(
+      {required this.controller, this.label, this.hint, this.icon, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        style: const TextStyle(
+          fontSize: 24.0,
+        ),
+        decoration: InputDecoration(
+          icon: icon != null
+              ? Icon(
+                  icon,
+                  size: 32.0,
+                )
+              : null,
+          border: const OutlineInputBorder(),
+          labelText: label,
+          hintText: hint,
+        ),
       ),
     );
   }
