@@ -9,16 +9,35 @@ class Bytebank extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: TransferList(),
+      theme: ThemeData(
+        colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            primary: Colors.green,
+            onPrimary: Colors.white,
+            secondary: Colors.blue,
+            onSecondary: Colors.white,
+            error: Colors.red,
+            onError: Colors.redAccent,
+            background: Colors.red,
+            onBackground: Colors.white10,
+            surface: Colors.black,
+            onSurface: Colors.black12),
       ),
+      home: TransferList(),
     );
   }
 }
 
-class TransferForm extends StatelessWidget {
-  TransferForm({super.key});
+class TransferForm extends StatefulWidget {
+  const TransferForm({super.key});
 
+  @override
+  State<StatefulWidget> createState() {
+    return TransferFormState();
+  }
+}
+
+class TransferFormState extends State<TransferForm> {
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _valueController = TextEditingController();
 
@@ -28,25 +47,27 @@ class TransferForm extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Create a transfer'),
       ),
-      body: Column(
-        children: [
-          EditField(
-              controller: _accountController,
-              label: 'Account',
-              hint: '1000',
-              icon: Icons.account_circle),
-          EditField(
-              controller: _valueController,
-              label: 'Value',
-              hint: '100.0',
-              icon: Icons.monetization_on),
-          ElevatedButton(
-            onPressed: () => {
-              _createTransfer(context),
-            },
-            child: const Text('Create'),
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            EditField(
+                controller: _accountController,
+                label: 'Account',
+                hint: '1000',
+                icon: Icons.account_circle),
+            EditField(
+                controller: _valueController,
+                label: 'Value',
+                hint: '100.0',
+                icon: Icons.monetization_on),
+            ElevatedButton(
+              onPressed: () => {
+                _createTransfer(context),
+              },
+              child: const Text('Create'),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -67,13 +88,13 @@ class TransferForm extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          duration: const Duration(milliseconds: 3000),
-          width: 300,
+          duration: const Duration(milliseconds: 2000),
+          width: 200,
           padding: const EdgeInsets.all(16.0),
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.blue,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
           ),
         ),
       );
@@ -118,31 +139,38 @@ class EditField extends StatelessWidget {
   }
 }
 
-class TransferList extends StatelessWidget {
+class TransferList extends StatefulWidget {
   TransferList({super.key});
 
   final List<Transfer> _transfers = [];
 
+  @override
+  State<StatefulWidget> createState() {
+    return TransferListState();
+  }
+}
+
+class TransferListState extends State<TransferList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transfers'),
       ),
-      body: _transfers.isNotEmpty
+      body: widget._transfers.isNotEmpty
           ? ListView.builder(
-              itemCount: _transfers.length,
+              itemCount: widget._transfers.length,
               itemBuilder: (context, index) {
-                final Transfer transfer = _transfers[index];
+                final Transfer transfer = widget._transfers[index];
                 return TransferItem(transfer);
               },
             )
           : const Center(
               child: Text(
-                'Enter a new transfer',
+                'Enter a transfer',
                 style: TextStyle(
                   fontSize: 32,
-                  color: Colors.amber,
+                  color: Colors.green,
                 ),
               ),
             ),
@@ -151,14 +179,13 @@ class TransferList extends StatelessWidget {
           final Future<Transfer?> receivedTransfer = Navigator.push(
             context,
             MaterialPageRoute(builder: (context) {
-              return TransferForm();
+              return const TransferForm();
             }),
           );
 
           receivedTransfer.then((transfer) => {
-                _transfers.add(transfer!),
-                debugPrint('Enter the future return'),
-                debugPrint('$transfer'),
+                if (transfer != null)
+                  {setState(() => widget._transfers.add(transfer))},
               });
         },
         child: const Icon(
@@ -194,6 +221,6 @@ class Transfer {
 
   @override
   String toString() {
-    return 'Created transfer to Account: $account with the Value: $value';
+    return 'Transfered to \nAccount: $account \nValue: $value';
   }
 }
