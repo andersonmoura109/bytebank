@@ -8,9 +8,9 @@ class Bytebank extends StatelessWidget {
   const Bytebank({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
-        body: TransferForm(),
+        body: TransferList(),
       ),
     );
   }
@@ -42,27 +42,7 @@ class TransferForm extends StatelessWidget {
               icon: Icons.monetization_on),
           ElevatedButton(
             onPressed: () => {
-              _createTransfer,
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text(
-                    'Test',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  duration: const Duration(milliseconds: 3000),
-                  width: 300,
-                  padding: const EdgeInsets.all(16.0),
-                  backgroundColor: Colors.orange,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
+              _createTransfer(context),
             },
             child: const Text('Create'),
           )
@@ -71,11 +51,34 @@ class TransferForm extends StatelessWidget {
     );
   }
 
-  void _createTransfer() {
+  void _createTransfer(BuildContext context) {
     final int? account = int.tryParse(_accountController.text);
     final double? value = double.tryParse(_valueController.text);
     if ((account != null) && (value != null)) {
-      Transfer(value: value, account: account);
+      final createdTransfer = Transfer(value: value, account: account);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            createdTransfer.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          duration: const Duration(milliseconds: 3000),
+          width: 300,
+          padding: const EdgeInsets.all(16.0),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+
+      Navigator.pop(context, createdTransfer);
     }
   }
 }
@@ -132,7 +135,19 @@ class TransferList extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          final Future<Transfer?> receivedTransfer = Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return TransferForm();
+            }),
+          );
+
+          receivedTransfer.then((transfer) => {
+                debugPrint('Enter the future return'),
+                debugPrint('$transfer'),
+              });
+        },
         child: const Icon(
           Icons.add,
         ),
