@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-      const MaterialApp(
-        home: Scaffold(
-          body: TransferForm(),
-        ),
+      const Bytebank(),
+    );
+
+class Bytebank extends StatelessWidget {
+  const Bytebank({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        body: TransferForm(),
       ),
     );
+  }
+}
 
 class TransferForm extends StatelessWidget {
   const TransferForm({super.key});
