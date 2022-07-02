@@ -8,7 +8,7 @@ class Bytebank extends StatelessWidget {
   const Bytebank({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: TransferList(),
       ),
@@ -119,7 +119,9 @@ class EditField extends StatelessWidget {
 }
 
 class TransferList extends StatelessWidget {
-  const TransferList({super.key});
+  TransferList({super.key});
+
+  final List<Transfer> _transfers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -127,13 +129,23 @@ class TransferList extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Transfers'),
       ),
-      body: Column(
-        children: [
-          TransferItem(Transfer(value: 100.00, account: 1000)),
-          TransferItem(Transfer(value: 200.00, account: 1001)),
-          TransferItem(Transfer(value: 300.00, account: 1002)),
-        ],
-      ),
+      body: _transfers.isNotEmpty
+          ? ListView.builder(
+              itemCount: _transfers.length,
+              itemBuilder: (context, index) {
+                final Transfer transfer = _transfers[index];
+                return TransferItem(transfer);
+              },
+            )
+          : const Center(
+              child: Text(
+                'Enter a new transfer',
+                style: TextStyle(
+                  fontSize: 32,
+                  color: Colors.amber,
+                ),
+              ),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final Future<Transfer?> receivedTransfer = Navigator.push(
@@ -144,6 +156,7 @@ class TransferList extends StatelessWidget {
           );
 
           receivedTransfer.then((transfer) => {
+                _transfers.add(transfer!),
                 debugPrint('Enter the future return'),
                 debugPrint('$transfer'),
               });
