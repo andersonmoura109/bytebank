@@ -21,7 +21,55 @@ class TransferForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('data');
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create a transfer'),
+      ),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
+            child: TextField(
+              keyboardType: TextInputType.number,
+              style: TextStyle(
+                fontSize: 24.0,
+              ),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.account_circle,
+                  size: 32.0,
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'Account',
+                hintText: '1000',
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24.0, 16, 24.0, 16),
+            child: TextField(
+              keyboardType: TextInputType.number,
+              style: TextStyle(
+                fontSize: 24.0,
+              ),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.monetization_on,
+                  size: 32.0,
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'Value',
+                hintText: '100.00',
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            child: const Text('Create'),
+          )
+        ],
+      ),
+    );
   }
 }
 
