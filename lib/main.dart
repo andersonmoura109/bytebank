@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Transfers'),
-          ),
-          body: const TransferList(),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            child: const Icon(
-              Icons.add,
-            ),
-          ),
+          body: TransferForm(),
         ),
       ),
     );
+
+class TransferForm extends StatelessWidget {
+  const TransferForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text('data');
+  }
+}
 
 class TransferList extends StatelessWidget {
   const TransferList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TransferItem(Transfer(value: 100.00, account: 1000)),
-        TransferItem(Transfer(value: 200.00, account: 1001)),
-        TransferItem(Transfer(value: 300.00, account: 1002)),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Transfers'),
+      ),
+      body: Column(
+        children: [
+          TransferItem(Transfer(value: 100.00, account: 1000)),
+          TransferItem(Transfer(value: 200.00, account: 1001)),
+          TransferItem(Transfer(value: 300.00, account: 1002)),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+        ),
+      ),
     );
   }
 }
